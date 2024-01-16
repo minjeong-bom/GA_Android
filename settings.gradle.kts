@@ -13,6 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Test WebView"
+rootProject.name = "GoodAfternoon Android App"
 include(":app")
  
