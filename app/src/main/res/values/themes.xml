@@ -3,8 +3,11 @@
     <style name="Base.Theme.TestWebView" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-        <item name="colorPrimaryDark">@color/gaRed</item>
+        <!-- <item name="colorPrimaryDark">@color/gaRed</item> -->
+        <item name="android:statusBarColor">@android:color/white</item>
+        <!--                <item name="android:windowTranslucentStatus">true</item>-->
+        <!--        <item name="android:windowDrawsSystemBarBackgrounds">true</item>-->
+        <item name="android:windowLightStatusBar">true</item>
     </style>
-
     <style name="Theme.TestWebView" parent="Base.Theme.TestWebView" />
 </resources>

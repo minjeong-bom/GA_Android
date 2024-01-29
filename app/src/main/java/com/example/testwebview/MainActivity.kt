@@ -1,5 +1,7 @@
 package com.example.testwebview
 
+import android.app.AlertDialog
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.webkit.WebChromeClient
@@ -7,7 +9,10 @@ import android.webkit.ValueCallback
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.net.Uri
+import android.os.Build
+import android.view.View
 
 class MainActivity : AppCompatActivity() {
     // 파일 업로드를 위한 요청 코드
@@ -18,13 +23,36 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // 상태바 아이콘 색상을 어둡게 설정
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            window.decorView.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+                        View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        }
+
         setContentView(R.layout.activity_main)
 
         val webView: WebView = findViewById(R.id.webview)
         webView.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView?, url: String): Boolean {
-                return !url.startsWith("http://169.254.49.198:9000")
+                return !url.startsWith("http://192.168.35.7:9000/")
             }
+        }
+
+        if (!isNetworkAvailable()) {
+            AlertDialog.Builder(this)
+                .setTitle("인터넷 연결 오류")
+                .setMessage("인터넷 연결을 해주세요")
+                .setPositiveButton("앱 종료") { dialog, which ->
+                    finish() // 액티비티 종료
+                }
+                .setCancelable(false)
+                .show()
+        } else {
+            // 인터넷 연결이 되어 있을 때의 로직
+            val webView: WebView = findViewById(R.id.webview)
+            // WebView 설정 및 기타 코드...
         }
 
         // 자바스크립트와 DOM 스토리지 활성화
@@ -51,7 +79,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         // 웹뷰에 URL 로드
-        webView.loadUrl("http://169.254.49.198:9000/#/")
+        webView.loadUrl("http://192.168.35.7:9000/")
     }
 
     // 결과를 처리하는 메서드
@@ -69,4 +97,11 @@ class MainActivity : AppCompatActivity() {
             super.onActivityResult(requestCode, resultCode, data)
         }
     }
+
+    private fun isNetworkAvailable(): Boolean {
+        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetworkInfo = connectivityManager.activeNetworkInfo
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected
+    }
+
 }
